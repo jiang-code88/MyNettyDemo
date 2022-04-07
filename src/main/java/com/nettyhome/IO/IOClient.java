@@ -23,12 +23,14 @@ public class IOClient {
 
                 while (true) {
                     try {
+                        // (2)每间隔两秒，写入带有时间戳的字符串数据
                         socket.getOutputStream().write((new Date() + ": hello world").getBytes());
                         Thread.sleep(200000);
-                        if(times++ == 1) { //第三次传送数据
-                            // 关闭连接
+                        // 限定信息传递次数-2次
+                        if(times++ == 1) {
+                            // 关闭连接——服务端read()将返回-1
                             //socket.close();
-                            // 线程结束
+                            // 线程结束——服务端read()将报connection reset错误
                             //break;
                         }
                     } catch (Exception e) {

@@ -35,9 +35,9 @@ public class IOServer {
                             byte[] data = new byte[1024];
                             InputStream inputStream = socket.getInputStream();
                             // (3) 按字节流方式读取数据
-                                // read() 当连接的inputStream不可用或没有数据时会一直阻塞等待
+                                // read() 当连接的inputStream不可用或没有数据时会read()一直阻塞等待
                                 // len == -1 表示字节流中已经没有内容可读-->客户端的socket.close()时会出现-1.
-                                // 客户端线程停止运行时，read() 方法会抛出connecion reset 错误停止监听字节流中数据。
+                                // 客户端线程停止运行时，read() 方法会抛出connection reset 错误而停止监听字节流中数据。
                             while ((len = inputStream.read(data)) != -1) {
                                 //System.out.println(new String(data, 0, len));
                                 log.debug("服务端接收信息长度{}",len);
