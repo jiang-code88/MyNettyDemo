@@ -16,17 +16,20 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j(topic = "c.NettyServer")
 public class NettyServer {
     public static void main(String[] args) {
+        // 引导类——进行服务端的启动工作
         ServerBootstrap serverBootstrap = new ServerBootstrap();
 
-        // 服务端，NIO模式的连接控制线程——接收服务端所有的连接，并绑定到selector上
+        // 服务端，NIO模式的连接控制线程组——accept接收服务端所有新连接，并绑定到selector上。
         NioEventLoopGroup boss = new NioEventLoopGroup();
-        // 服务端，NIO模式的连接读写控制线程——selector线程，负责轮询其上所有的连接，监测读请求连接
+        // 服务端，NIO模式的连接数据读写控制线程组——selector线程，负责轮询其上所有的连接，监测连接的读/写请求
         NioEventLoopGroup worker = new NioEventLoopGroup();
 
         serverBootstrap
                 .group(boss, worker)
-                .channel(NioServerSocketChannel.class) // NIO模式的连接
+                .channel(NioServerSocketChannel.class) // NIO模型的连接
+                // ChannelInitializer 定义后续每条连接的数据读写，业务处理逻辑
                 .childHandler(new ChannelInitializer<NioSocketChannel>() {
+                    @Override
                     protected void initChannel(NioSocketChannel ch) {
                         ch.pipeline().addLast(new StringDecoder()); // 连接中数据的字符串解码器
                         ch.pipeline().addLast(new SimpleChannelInboundHandler<String>() {

@@ -14,6 +14,7 @@ import java.util.Date;
  */
 public class NettyClient {
     public static void main(String[] args) throws InterruptedException {
+        // 客户端启动的引导类
         Bootstrap bootstrap = new Bootstrap();
 
         // 客户端，NIO模式的连接读写控制线程——监测写请求连接
