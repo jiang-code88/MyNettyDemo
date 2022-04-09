@@ -1,4 +1,4 @@
-package com.nettyhome;
+package com.nettyhome.Netty.StartDemo;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
