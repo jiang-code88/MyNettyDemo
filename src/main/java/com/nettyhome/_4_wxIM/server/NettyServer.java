@@ -1,5 +1,9 @@
 package com.nettyhome._4_wxIM.server;
 
+import com.nettyhome._4_wxIM.coder.PacketDecoder;
+import com.nettyhome._4_wxIM.coder.PacketEncoder;
+import com.nettyhome._4_wxIM.server.handler.LoginRequestHandler;
+import com.nettyhome._4_wxIM.server.handler.MessageRequestHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
@@ -29,10 +33,13 @@ public class NettyServer {
                 .childOption(ChannelOption.TCP_NODELAY, true)
                 .childHandler(new ChannelInitializer<NioSocketChannel>() {
                     protected void initChannel(NioSocketChannel ch) {
-                        ch.pipeline().addLast(new ServerHandler());
+                        //ch.pipeline().addLast(new ServerHandler());
+                        ch.pipeline().addLast(new PacketDecoder());
+                        ch.pipeline().addLast(new LoginRequestHandler());
+                        ch.pipeline().addLast(new MessageRequestHandler());
+                        ch.pipeline().addLast(new PacketEncoder());
                     }
                 });
-
 
         bind(serverBootstrap, PORT);
     }

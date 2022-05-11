@@ -40,7 +40,6 @@ public class PacketCodeC {
      */
     private final Map<Byte, Serializer> serializerMap;
 
-
     private PacketCodeC() {
         packetTypeMap = new HashMap<>();
         packetTypeMap.put(Command.LOGIN_REQUEST, LoginRequestPacket.class);
@@ -53,10 +52,13 @@ public class PacketCodeC {
         serializerMap.put(serializer.getSerializerAlogrithm(), serializer);
     }
 
-
     public ByteBuf encode(ByteBufAllocator byteBufAllocator, Packet packet) {
         // 1. 创建 ByteBuf 对象
         ByteBuf byteBuf = byteBufAllocator.ioBuffer();
+        return encode(byteBuf,packet);
+    }
+
+    public ByteBuf encode(ByteBuf byteBuf,Packet packet){
         // 2. 序列化 java 对象
         byte[] bytes = Serializer.DEFAULT.serialize(packet);
 
@@ -70,7 +72,6 @@ public class PacketCodeC {
 
         return byteBuf;
     }
-
 
     public Packet decode(ByteBuf byteBuf) {
         // 跳过 magic number

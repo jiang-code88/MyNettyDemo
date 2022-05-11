@@ -15,6 +15,7 @@ import java.util.Date;
 /**
  * 服务端连接的逻辑处理器
  */
+@Deprecated
 public class ServerHandler extends ChannelInboundHandlerAdapter {
 
     /**

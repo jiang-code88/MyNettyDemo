@@ -16,6 +16,7 @@ import java.util.UUID;
 /**
  * 客户端连接的逻辑处理器
  */
+@Deprecated
 public class ClientHandler extends ChannelInboundHandlerAdapter {
     /**
      * 客户端启动并建立连接后，将回调channelActive方法向服务端发送登录报文
