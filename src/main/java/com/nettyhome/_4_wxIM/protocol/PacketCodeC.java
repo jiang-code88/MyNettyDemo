@@ -23,7 +23,7 @@ public class PacketCodeC {
     /**
      * 协议魔数
      */
-    private static final int MAGIC_NUMBER = 0x12345678;
+    public static final int MAGIC_NUMBER = 0x12345678;
 
     /**
      * 协议编解码器的单例对象

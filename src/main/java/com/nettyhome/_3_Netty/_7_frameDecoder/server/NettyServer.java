@@ -1,23 +1,14 @@
-package com.nettyhome._4_wxIM.server;
+package com.nettyhome._3_Netty._7_frameDecoder.server;
 
-import com.nettyhome._4_wxIM.coder.PacketDecoder;
-import com.nettyhome._4_wxIM.coder.PacketEncoder;
-import com.nettyhome._4_wxIM.coder.Splitter;
-import com.nettyhome._4_wxIM.server.handler.LoginRequestHandler;
-import com.nettyhome._4_wxIM.server.handler.MessageRequestHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
+import io.netty.handler.codec.FixedLengthFrameDecoder;
+import io.netty.handler.codec.LineBasedFrameDecoder;
 
-import java.util.Date;
-
-/**
- * 服务端
- */
 public class NettyServer {
 
     private static final int PORT = 8000;
@@ -33,26 +24,21 @@ public class NettyServer {
                 .option(ChannelOption.SO_BACKLOG, 1024)
                 .childOption(ChannelOption.SO_KEEPALIVE, true)
                 .childOption(ChannelOption.TCP_NODELAY, true)
+                // 服务端添加一个逻辑处理器
                 .childHandler(new ChannelInitializer<NioSocketChannel>() {
                     protected void initChannel(NioSocketChannel ch) {
-                        //ch.pipeline().addLast(new ServerHandler());
-                        // 基于长度域的拆包器
-                        //ch.pipeline().addLast(new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 7, 4));
-                        ch.pipeline().addLast(new Splitter());
-                        ch.pipeline().addLast(new PacketDecoder());
-                        ch.pipeline().addLast(new LoginRequestHandler());
-                        ch.pipeline().addLast(new MessageRequestHandler());
-                        ch.pipeline().addLast(new PacketEncoder());
+                        //ch.pipeline().addLast(new FixedLengthFrameDecoder(70));// 固定长度的拆包器
+                        //ch.pipeline().addLast(new LineBasedFrameDecoder(Integer.MAX_VALUE));// 换行符拆包器
+                        ch.pipeline().addLast(new FirstServerHandler());
                     }
                 });
-
         bind(serverBootstrap, PORT);
     }
 
     private static void bind(final ServerBootstrap serverBootstrap, final int port) {
         serverBootstrap.bind(port).addListener(future -> {
             if (future.isSuccess()) {
-                System.out.println(new Date() + ": 端口[" + port + "]绑定成功!");
+                System.out.println("端口[" + port + "]绑定成功!");
             } else {
                 System.err.println("端口[" + port + "]绑定失败!");
             }

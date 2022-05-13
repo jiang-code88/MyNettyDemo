@@ -4,6 +4,7 @@ import com.nettyhome._4_wxIM.client.handler.LoginResponseHandler;
 import com.nettyhome._4_wxIM.client.handler.MessageResponseHandler;
 import com.nettyhome._4_wxIM.coder.PacketDecoder;
 import com.nettyhome._4_wxIM.coder.PacketEncoder;
+import com.nettyhome._4_wxIM.coder.Splitter;
 import com.nettyhome._4_wxIM.protocol.PacketCodeC;
 import com.nettyhome._4_wxIM.protocol.request.MessageRequestPacket;
 import com.nettyhome._4_wxIM.util.LoginUtil;
@@ -16,6 +17,7 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.protobuf.ProtobufDecoder;
 
 import java.util.Date;
@@ -45,6 +47,9 @@ public class NettyClient {
                     @Override
                     public void initChannel(SocketChannel ch) {
                         //ch.pipeline().addLast(new ClientHandler());
+                        // 基于长度域的拆包器
+                        //ch.pipeline().addLast(new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 7, 4));
+                        ch.pipeline().addLast(new Splitter());
                         ch.pipeline().addLast(new PacketDecoder());
                         ch.pipeline().addLast(new LoginResponseHandler());
                         ch.pipeline().addLast(new MessageResponseHandler());
