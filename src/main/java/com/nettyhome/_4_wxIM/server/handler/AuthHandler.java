@@ -1,6 +1,6 @@
 package com.nettyhome._4_wxIM.server.handler;
 
-import com.nettyhome._4_wxIM.util.LoginUtil;
+import com.nettyhome._4_wxIM.util.SessionUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
@@ -11,7 +11,7 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 public class AuthHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        if(!LoginUtil.hasLogin(ctx.channel())){
+        if(!SessionUtil.hasLogin(ctx.channel())){
             // 未登录的数据包-直接强制关闭连接
             ctx.channel().close();
         }else{
@@ -26,7 +26,7 @@ public class AuthHandler extends ChannelInboundHandlerAdapter {
     // 当前的Handler被移除时触发的回调函数
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
-        if(LoginUtil.hasLogin(ctx.channel())){
+        if(SessionUtil.hasLogin(ctx.channel())){
             System.out.println("当前连接登录验证完毕，无需再次验证, AuthHandler 被移除");
         }else{
             System.out.println("未登录验证，已强制关闭连接!");

@@ -6,8 +6,10 @@ import com.nettyhome._4_wxIM.coder.PacketDecoder;
 import com.nettyhome._4_wxIM.coder.PacketEncoder;
 import com.nettyhome._4_wxIM.coder.Splitter;
 import com.nettyhome._4_wxIM.protocol.PacketCodeC;
+import com.nettyhome._4_wxIM.protocol.request.LoginRequestPacket;
 import com.nettyhome._4_wxIM.protocol.request.MessageRequestPacket;
-import com.nettyhome._4_wxIM.util.LoginUtil;
+import com.nettyhome._4_wxIM.session.Session;
+import com.nettyhome._4_wxIM.util.SessionUtil;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
@@ -20,6 +22,7 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.protobuf.ProtobufDecoder;
 
+import javax.sound.midi.Soundbank;
 import java.util.Date;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
@@ -92,15 +95,33 @@ public class NettyClient {
         new Thread(() -> {
             Scanner sc = new Scanner(System.in);
             while (!Thread.interrupted()) {
-                if (LoginUtil.hasLogin(channel)) {
-                    System.out.println("输入消息发送至服务端: ");
-                    String line = sc.nextLine();
+                if (SessionUtil.hasLogin(channel)) {
+                    String toUserId = sc.next();
+                    String message = sc.next();
                     MessageRequestPacket messageRequestPacket = new MessageRequestPacket();
-                    messageRequestPacket.setMessage(line);
-                    //ByteBuf byteBuf = PacketCodeC.INSTANCE.encode(channel.alloc(), packet);
+                    messageRequestPacket.setToUserId(toUserId);
+                    messageRequestPacket.setMessage(message);
                     channel.writeAndFlush(messageRequestPacket);
+                }else{
+                    System.out.println("请输入用户名登录：");
+                    String username = sc.nextLine();
+                    // 1.创建登录请求数据包
+                    LoginRequestPacket loginRequestPacket = new LoginRequestPacket();
+                    loginRequestPacket.setUsername(username);
+                    loginRequestPacket.setPassword("pwd");
+
+                    // 3.发送数据
+                    channel.writeAndFlush(loginRequestPacket);
+                    waitForLoginResponse();
                 }
             }
         }).start();
+    }
+
+    private static void waitForLoginResponse() {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException ignored) {
+        }
     }
 }

@@ -3,7 +3,8 @@ package com.nettyhome._4_wxIM.client.handler;
 import com.nettyhome._4_wxIM.protocol.PacketCodeC;
 import com.nettyhome._4_wxIM.protocol.request.LoginRequestPacket;
 import com.nettyhome._4_wxIM.protocol.response.LoginResponsePacket;
-import com.nettyhome._4_wxIM.util.LoginUtil;
+import com.nettyhome._4_wxIM.session.Session;
+import com.nettyhome._4_wxIM.util.SessionUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -17,7 +18,7 @@ import java.util.UUID;
  */
 public class LoginResponseHandler extends SimpleChannelInboundHandler<LoginResponsePacket> {
 
-    @Override
+    /*@Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         // 1.创建登录请求数据包
         LoginRequestPacket loginRequestPacket = new LoginRequestPacket();
@@ -27,14 +28,17 @@ public class LoginResponseHandler extends SimpleChannelInboundHandler<LoginRespo
 
         // 3.发送数据
         ctx.channel().writeAndFlush(loginRequestPacket);
-    }
+    }*/
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, LoginResponsePacket loginResponsePacket) throws Exception {
+        String userId = loginResponsePacket.getUserId();
+        String username = loginResponsePacket.getUsername();
+
         // 校验登录响应数据包
         if (loginResponsePacket.isSuccess()) {
-            System.out.println(new Date() + ": 客户端登录成功");
-            LoginUtil.markAsLogin(ctx.channel());
+            System.out.println("[" + username + "]登录成功，userId 为: " + loginResponsePacket.getUserId());
+            SessionUtil.bindSession(ctx.channel(),new Session(userId,username));
         } else {
             System.out.println(new Date() + ": 客户端登录失败，原因：" + loginResponsePacket.getReason());
         }
