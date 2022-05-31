@@ -1,6 +1,11 @@
 package com.nettyhome._4_wxIM.client;
 
+import com.nettyhome._4_wxIM.client.console.ConsoleCommandManage;
+import com.nettyhome._4_wxIM.client.console.LoginConsoleCommand;
+import com.nettyhome._4_wxIM.client.console.SendToUserConsoleCommand;
+import com.nettyhome._4_wxIM.client.handler.CreateGroupResponseHandler;
 import com.nettyhome._4_wxIM.client.handler.LoginResponseHandler;
+import com.nettyhome._4_wxIM.client.handler.LogoutResponseHandler;
 import com.nettyhome._4_wxIM.client.handler.MessageResponseHandler;
 import com.nettyhome._4_wxIM.coder.PacketDecoder;
 import com.nettyhome._4_wxIM.coder.PacketEncoder;
@@ -55,6 +60,8 @@ public class NettyClient {
                         ch.pipeline().addLast(new Splitter());
                         ch.pipeline().addLast(new PacketDecoder());
                         ch.pipeline().addLast(new LoginResponseHandler());
+                        ch.pipeline().addLast(new LogoutResponseHandler());
+                        ch.pipeline().addLast(new CreateGroupResponseHandler());
                         ch.pipeline().addLast(new MessageResponseHandler());
                         ch.pipeline().addLast(new PacketEncoder());
                     }
@@ -66,7 +73,7 @@ public class NettyClient {
     private static void connect(Bootstrap bootstrap, String host, int port, int retry) {
         bootstrap.connect(host, port).addListener(future -> {
             if (future.isSuccess()) {
-                System.out.println(new Date() + ": 连接成功!");
+                System.out.println(new Date() + ": 连接成功，启动控制台线程...");
                 // 连接成功之后，启动控制台线程
                 Channel channel = ((ChannelFuture) future).channel();
                 startConsoleThread(channel);
@@ -91,37 +98,52 @@ public class NettyClient {
      * 连接成功后开启控制台监听线程，监听客户端控制台的消息输入并发送
      * @param channel
      */
-    private static void startConsoleThread(Channel channel) {
-        new Thread(() -> {
-            Scanner sc = new Scanner(System.in);
-            while (!Thread.interrupted()) {
-                if (SessionUtil.hasLogin(channel)) {
-                    String toUserId = sc.next();
-                    String message = sc.next();
-                    MessageRequestPacket messageRequestPacket = new MessageRequestPacket();
-                    messageRequestPacket.setToUserId(toUserId);
-                    messageRequestPacket.setMessage(message);
-                    channel.writeAndFlush(messageRequestPacket);
-                }else{
-                    System.out.println("请输入用户名登录：");
-                    String username = sc.nextLine();
-                    // 1.创建登录请求数据包
-                    LoginRequestPacket loginRequestPacket = new LoginRequestPacket();
-                    loginRequestPacket.setUsername(username);
-                    loginRequestPacket.setPassword("pwd");
+    /*
+        private static void startConsoleThread(Channel channel) {
+            new Thread(() -> {
+                Scanner sc = new Scanner(System.in);
+                while (!Thread.interrupted()) {
+                    if (SessionUtil.hasLogin(channel)) {
+                        String toUserId = sc.next();
+                        String message = sc.next();
+                        MessageRequestPacket messageRequestPacket = new MessageRequestPacket();
+                        messageRequestPacket.setToUserId(toUserId);
+                        messageRequestPacket.setMessage(message);
+                        channel.writeAndFlush(messageRequestPacket);
+                    }else{
+                        System.out.println("请输入用户名登录：");
+                        String username = sc.nextLine();
+                        // 1.创建登录请求数据包
+                        LoginRequestPacket loginRequestPacket = new LoginRequestPacket();
+                        loginRequestPacket.setUsername(username);
+                        loginRequestPacket.setPassword("pwd");
 
-                    // 3.发送数据
-                    channel.writeAndFlush(loginRequestPacket);
-                    waitForLoginResponse();
+                        // 3.发送数据
+                        channel.writeAndFlush(loginRequestPacket);
+                        waitForLoginResponse();
+                    }
                 }
-            }
-        }).start();
-    }
-
-    private static void waitForLoginResponse() {
+            }).start();
+        }*/
+    /*private static void waitForLoginResponse() {
         try {
             Thread.sleep(1000);
         } catch (InterruptedException ignored) {
         }
+    } */
+    private static void startConsoleThread(Channel channel) {
+        LoginConsoleCommand loginConsoleCommand = new LoginConsoleCommand();
+        ConsoleCommandManage consoleCommandManage = new ConsoleCommandManage();
+        Scanner scanner = new Scanner(System.in);
+
+        new Thread(() -> {
+            while (!Thread.interrupted()) {
+                if (!SessionUtil.hasLogin(channel)) {
+                    loginConsoleCommand.exec(scanner,channel);
+                }else{
+                    consoleCommandManage.exec(scanner,channel);
+                }
+            }
+        }).start();
     }
 }

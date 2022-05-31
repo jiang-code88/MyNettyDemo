@@ -48,7 +48,7 @@ public class SessionUtil {
      * @return
      */
     public static Session getSession(Channel channel){
-        return channel.attr(Attributes.SESSION).get();
+        return channel != null ? channel.attr(Attributes.SESSION).get() : null;
     }
 
     /**

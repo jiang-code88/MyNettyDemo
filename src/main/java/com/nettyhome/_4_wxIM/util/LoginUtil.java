@@ -8,6 +8,7 @@ import io.netty.util.Attribute;
  * @author jrk
  * @date 2022-05-28 18:17.
  */
+@Deprecated
 public class LoginUtil {
     /**
      * 连接添加登录成功标记
