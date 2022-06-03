@@ -28,4 +28,19 @@ public interface Command {
 
     // 创建群聊响应
     Byte CREATE_GROUP_RESPONSE = 8;
+
+    // 加入群聊
+    Byte JOIN_GROUP_REQUEST = 9;
+
+    Byte JOIN_GROUP_RESPONSE = 10;
+
+    // 退出群聊
+    Byte QUIT_GROUP_REQUEST = 11;
+
+    Byte QUIT_GROUP_RESPONSE = 12;
+
+    // 获取群聊用户列表
+    Byte LIST_GROUP_MEMBERS_REQUEST = 13;
+
+    Byte LIST_GROUP_MEMBERS_RESPONSE = 14;
 }

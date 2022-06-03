@@ -3,6 +3,7 @@ package com.nettyhome._4_wxIM.util;
 import com.nettyhome._4_wxIM.attribute.*;
 import com.nettyhome._4_wxIM.session.Session;
 import io.netty.channel.Channel;
+import io.netty.channel.group.ChannelGroup;
 import io.netty.util.Attribute;
 
 import java.util.HashMap;
@@ -14,6 +15,7 @@ import java.util.Map;
 public class SessionUtil {
 
     private static final Map<String,Channel> userIdChannelMap = new HashMap<String,Channel>();
+    private static final Map<String,ChannelGroup> groupIdChannelGroupMap = new HashMap<>();
 
     /**
      * 连接绑定登录会话信息
@@ -60,4 +62,11 @@ public class SessionUtil {
         return userIdChannelMap.get(userId);
     }
 
+    public static void bindChannelGroup(String groupId, ChannelGroup channelGroup){
+        groupIdChannelGroupMap.put(groupId,channelGroup);
+    }
+
+    public static ChannelGroup getChannelGroup(String groupId){
+        return groupIdChannelGroupMap.get(groupId);
+    }
 }

@@ -1,14 +1,8 @@
 package com.nettyhome._4_wxIM.protocol;
 
 import com.nettyhome._4_wxIM.protocol.command.Command;
-import com.nettyhome._4_wxIM.protocol.request.CreateGroupRequestPacket;
-import com.nettyhome._4_wxIM.protocol.request.LoginRequestPacket;
-import com.nettyhome._4_wxIM.protocol.request.LogoutRequestPacket;
-import com.nettyhome._4_wxIM.protocol.request.MessageRequestPacket;
-import com.nettyhome._4_wxIM.protocol.response.CreateGroupResponsePacket;
-import com.nettyhome._4_wxIM.protocol.response.LoginResponsePacket;
-import com.nettyhome._4_wxIM.protocol.response.LogoutResponsePacket;
-import com.nettyhome._4_wxIM.protocol.response.MessageResponsePacket;
+import com.nettyhome._4_wxIM.protocol.request.*;
+import com.nettyhome._4_wxIM.protocol.response.*;
 import com.nettyhome._4_wxIM.serialize.Serializer;
 import com.nettyhome._4_wxIM.serialize.impl.JSONSerializer;
 import io.netty.buffer.ByteBuf;
@@ -54,7 +48,12 @@ public class PacketCodeC {
         packetTypeMap.put(Command.LOGOUT_RESPONSE, LogoutResponsePacket.class);
         packetTypeMap.put(Command.CREATE_GROUP_REQUEST, CreateGroupRequestPacket.class);
         packetTypeMap.put(Command.CREATE_GROUP_RESPONSE, CreateGroupResponsePacket.class);
-
+        packetTypeMap.put(Command.JOIN_GROUP_REQUEST, JoinGroupRequestPacket.class);
+        packetTypeMap.put(Command.JOIN_GROUP_RESPONSE, JoinGroupResponsePacket.class);
+        packetTypeMap.put(Command.QUIT_GROUP_REQUEST, QuitGroupRequestPacket.class);
+        packetTypeMap.put(Command.QUIT_GROUP_RESPONSE, QuitGroupResponsePacket.class);
+        packetTypeMap.put(Command.LIST_GROUP_MEMBERS_REQUEST, ListGroupMembersRequestPacket.class);
+        packetTypeMap.put(Command.LIST_GROUP_MEMBERS_RESPONSE, ListGroupMembersResponsePacket.class);
 
         serializerMap = new HashMap<>();
         Serializer serializer = new JSONSerializer();

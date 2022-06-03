@@ -2,6 +2,7 @@ package com.nettyhome._4_wxIM.server.handler;
 
 import com.nettyhome._4_wxIM.protocol.request.CreateGroupRequestPacket;
 import com.nettyhome._4_wxIM.protocol.response.CreateGroupResponsePacket;
+import com.nettyhome._4_wxIM.session.Session;
 import com.nettyhome._4_wxIM.util.SessionUtil;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -37,7 +38,7 @@ public class CreateGroupRequestHandler extends SimpleChannelInboundHandler<Creat
         // 2.创建群聊创建的响应数据包
         CreateGroupResponsePacket createGroupResponsePacket = new CreateGroupResponsePacket();
         createGroupResponsePacket.setGroupUsernameList(groupUsernameList);
-        createGroupResponsePacket.setGroupUsernameList(groupUserIdList);
+        createGroupResponsePacket.setGroupUserIdList(groupUserIdList);
         String groupId = randomUserId();
         createGroupResponsePacket.setGroupId(groupId);
         createGroupResponsePacket.setSuccess(true);
@@ -49,6 +50,8 @@ public class CreateGroupRequestHandler extends SimpleChannelInboundHandler<Creat
         System.out.print("群里面有：" + createGroupResponsePacket.getGroupUsernameList());
         System.out.println("对应的userId列表为：" + groupUserIdList);
 
+        // 4.绑定channelGroup和groupId
+        SessionUtil.bindChannelGroup(groupId,channelGroup);
     }
 
     private String randomUserId(){

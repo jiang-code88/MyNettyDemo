@@ -4,6 +4,7 @@ import com.nettyhome._4_wxIM.client.handler.LogoutResponseHandler;
 import com.nettyhome._4_wxIM.coder.PacketDecoder;
 import com.nettyhome._4_wxIM.coder.PacketEncoder;
 import com.nettyhome._4_wxIM.coder.Splitter;
+import com.nettyhome._4_wxIM.protocol.request.QuitGroupRequestPacket;
 import com.nettyhome._4_wxIM.server.handler.*;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
@@ -45,9 +46,12 @@ public class NettyServer {
                         // 新增加用户认证handler
                         ch.pipeline().addLast(new AuthHandler());
 
-                        ch.pipeline().addLast(new LogoutRequestHandler());
                         ch.pipeline().addLast(new CreateGroupRequestHandler());
                         ch.pipeline().addLast(new MessageRequestHandler());
+                        ch.pipeline().addLast(new JoinGroupRequestHandler());
+                        ch.pipeline().addLast(new QuitGroupRequestHandler());
+                        ch.pipeline().addLast(new LogoutRequestHandler());
+                        ch.pipeline().addLast(new ListGroupMembersRequestHandler());
                         ch.pipeline().addLast(new PacketEncoder());
                     }
                 });

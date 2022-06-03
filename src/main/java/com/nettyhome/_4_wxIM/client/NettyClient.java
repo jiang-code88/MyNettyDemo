@@ -3,10 +3,7 @@ package com.nettyhome._4_wxIM.client;
 import com.nettyhome._4_wxIM.client.console.ConsoleCommandManage;
 import com.nettyhome._4_wxIM.client.console.LoginConsoleCommand;
 import com.nettyhome._4_wxIM.client.console.SendToUserConsoleCommand;
-import com.nettyhome._4_wxIM.client.handler.CreateGroupResponseHandler;
-import com.nettyhome._4_wxIM.client.handler.LoginResponseHandler;
-import com.nettyhome._4_wxIM.client.handler.LogoutResponseHandler;
-import com.nettyhome._4_wxIM.client.handler.MessageResponseHandler;
+import com.nettyhome._4_wxIM.client.handler.*;
 import com.nettyhome._4_wxIM.coder.PacketDecoder;
 import com.nettyhome._4_wxIM.coder.PacketEncoder;
 import com.nettyhome._4_wxIM.coder.Splitter;
@@ -63,6 +60,9 @@ public class NettyClient {
                         ch.pipeline().addLast(new LogoutResponseHandler());
                         ch.pipeline().addLast(new CreateGroupResponseHandler());
                         ch.pipeline().addLast(new MessageResponseHandler());
+                        ch.pipeline().addLast(new JoinGroupResponseHandler());
+                        ch.pipeline().addLast(new QuitGroupResponseHandler());
+                        ch.pipeline().addLast(new ListGroupMembersResponseHandler());
                         ch.pipeline().addLast(new PacketEncoder());
                     }
                 });
