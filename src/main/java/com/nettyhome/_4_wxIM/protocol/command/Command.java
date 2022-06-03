@@ -43,4 +43,9 @@ public interface Command {
     Byte LIST_GROUP_MEMBERS_REQUEST = 13;
 
     Byte LIST_GROUP_MEMBERS_RESPONSE = 14;
+
+    // 群聊消息
+    Byte GROUP_MESSAGE_REQUEST = 15;
+
+    Byte GROUP_MESSAGE_RESPONSE = 16;
 }

@@ -22,10 +22,12 @@ public class ConsoleCommandManage implements ConsoleCommand {
         consoleCommandMap.put("joinGroup", new JoinGroupConsoleCommand());
         consoleCommandMap.put("quitGroup", new QuitGroupConsoleCommand());
         consoleCommandMap.put("listGroupMembers", new ListGroupMembersConsoleCommand());
+        consoleCommandMap.put("sendToGroup",new SendToGroupConsoleCommand());
     }
 
     @Override
     public void exec(Scanner scanner, Channel channel) {
+        // 读取字符串指令
         String command = scanner.next();
 
         // 检验连接是否处于登录状态
@@ -35,7 +37,7 @@ public class ConsoleCommandManage implements ConsoleCommand {
 
         ConsoleCommand consoleCommand = consoleCommandMap.get(command);
         if(consoleCommand != null){
-            scanner.nextLine(); // 把createGroup指令后的回车给读了
+            //scanner.nextLine(); // 把createGroup指令后的回车给读了
             consoleCommand.exec(scanner,channel);
         }else{
             scanner.nextLine(); // 将错误指令的整行内容忽略读入

@@ -20,6 +20,7 @@ public class CreateGroupConsoleCommand implements ConsoleCommand {
     @Override
     public void exec(Scanner scanner, Channel channel) {
         System.out.println("【拉人群聊】输入 userId 列表，userId 之间使用空格隔开");
+        scanner.nextLine(); // 把createGroup指令后的回车给读了
         String userIdList = scanner.nextLine();
         List<String> groupUserIdList = Arrays.asList(userIdList.split(USER_ID_SPLITTER));
         CreateGroupRequestPacket createGroupRequestPacket = new CreateGroupRequestPacket();
