@@ -7,6 +7,7 @@ import com.nettyhome._4_wxIM.client.handler.*;
 import com.nettyhome._4_wxIM.coder.PacketDecoder;
 import com.nettyhome._4_wxIM.coder.PacketEncoder;
 import com.nettyhome._4_wxIM.coder.Splitter;
+import com.nettyhome._4_wxIM.handler.IMIdleStateHandler;
 import com.nettyhome._4_wxIM.protocol.PacketCodeC;
 import com.nettyhome._4_wxIM.protocol.request.LoginRequestPacket;
 import com.nettyhome._4_wxIM.protocol.request.MessageRequestPacket;
@@ -54,6 +55,10 @@ public class NettyClient {
                         //ch.pipeline().addLast(new ClientHandler());
                         // 基于长度域的拆包器
                         //ch.pipeline().addLast(new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 7, 4));
+
+                        // 连接的空闲检测
+                        //ch.pipeline().addLast(new IMIdleStateHandler());
+
                         ch.pipeline().addLast(new Splitter());
                         ch.pipeline().addLast(new PacketDecoder());
                         ch.pipeline().addLast(new LoginResponseHandler());
@@ -65,6 +70,9 @@ public class NettyClient {
                         ch.pipeline().addLast(new ListGroupMembersResponseHandler());
                         ch.pipeline().addLast(new GroupMessageResponseHandler());
                         ch.pipeline().addLast(new PacketEncoder());
+
+                        // 心跳包发送定时器
+                        ch.pipeline().addLast(new HeartBeatTimerHandler());
                     }
                 });
 
