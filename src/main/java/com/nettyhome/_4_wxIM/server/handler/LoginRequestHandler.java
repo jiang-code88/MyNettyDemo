@@ -4,6 +4,7 @@ import com.nettyhome._4_wxIM.protocol.request.LoginRequestPacket;
 import com.nettyhome._4_wxIM.protocol.response.LoginResponsePacket;
 import com.nettyhome._4_wxIM.session.Session;
 import com.nettyhome._4_wxIM.util.SessionUtil;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
@@ -14,7 +15,15 @@ import java.util.UUID;
  * @author jrk
  * @date 2022-05-11 22:22.
  */
+// 1. 加上注解标识，表明该 handler 是可以多个 channel 共享的
+@ChannelHandler.Sharable
 public class LoginRequestHandler extends SimpleChannelInboundHandler<LoginRequestPacket> {
+
+    // 2. 构造单例
+    public static final LoginRequestHandler INSTANCE = new LoginRequestHandler();
+
+    private LoginRequestHandler() { }
+
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, LoginRequestPacket loginRequestPacket) throws Exception {
         System.out.println(new Date() + ": 客户端开始登录……");

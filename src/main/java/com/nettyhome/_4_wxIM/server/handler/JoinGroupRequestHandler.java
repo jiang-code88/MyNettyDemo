@@ -12,6 +12,11 @@ import io.netty.channel.group.ChannelGroup;
  * @date 2022-06-02 12:16.
  */
 public class JoinGroupRequestHandler extends SimpleChannelInboundHandler<JoinGroupRequestPacket> {
+
+    public static final JoinGroupRequestHandler INSTANCE = new JoinGroupRequestHandler();
+
+    private JoinGroupRequestHandler() { }
+
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, JoinGroupRequestPacket joinGroupRequestPacket) throws Exception {
         String groupId = joinGroupRequestPacket.getGroupId();

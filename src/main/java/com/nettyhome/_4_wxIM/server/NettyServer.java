@@ -1,6 +1,7 @@
 package com.nettyhome._4_wxIM.server;
 
 import com.nettyhome._4_wxIM.client.handler.LogoutResponseHandler;
+import com.nettyhome._4_wxIM.coder.PacketCodecHandler;
 import com.nettyhome._4_wxIM.coder.PacketDecoder;
 import com.nettyhome._4_wxIM.coder.PacketEncoder;
 import com.nettyhome._4_wxIM.coder.Splitter;
@@ -37,23 +38,28 @@ public class NettyServer {
                 .childHandler(new ChannelInitializer<NioSocketChannel>() {
                     protected void initChannel(NioSocketChannel ch) {
                         //ch.pipeline().addLast(new ServerHandler());
+
                         // 基于长度域的拆包器
                         //ch.pipeline().addLast(new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 7, 4));
+
                         ch.pipeline().addLast(new Splitter());
-                        ch.pipeline().addLast(new PacketDecoder());
-                        ch.pipeline().addLast(new LoginRequestHandler());
+                        //ch.pipeline().addLast(new PacketDecoder());
+                        ch.pipeline().addLast(PacketCodecHandler.INSTANCE);
+                        ch.pipeline().addLast(LoginRequestHandler.INSTANCE);
 
                         // 新增加用户认证handler
-                        ch.pipeline().addLast(new AuthHandler());
+                        //ch.pipeline().addLast(new AuthHandler());
+                        ch.pipeline().addLast(AuthHandler.INSTANCE);
 
-                        ch.pipeline().addLast(new CreateGroupRequestHandler());
-                        ch.pipeline().addLast(new MessageRequestHandler());
-                        ch.pipeline().addLast(new JoinGroupRequestHandler());
-                        ch.pipeline().addLast(new QuitGroupRequestHandler());
-                        ch.pipeline().addLast(new LogoutRequestHandler());
-                        ch.pipeline().addLast(new ListGroupMembersRequestHandler());
-                        ch.pipeline().addLast(new GroupMessageRequestHandler());
-                        ch.pipeline().addLast(new PacketEncoder());
+                        //ch.pipeline().addLast(new CreateGroupRequestHandler());
+                        //ch.pipeline().addLast(new MessageRequestHandler());
+                        //ch.pipeline().addLast(new JoinGroupRequestHandler());
+                        //ch.pipeline().addLast(new QuitGroupRequestHandler());
+                        //ch.pipeline().addLast(new LogoutRequestHandler());
+                        //ch.pipeline().addLast(new ListGroupMembersRequestHandler());
+                        //ch.pipeline().addLast(new GroupMessageRequestHandler());
+                        ch.pipeline().addLast(IMHandler.INSTANCE);
+                        //ch.pipeline().addLast(new PacketEncoder());
                     }
                 });
 

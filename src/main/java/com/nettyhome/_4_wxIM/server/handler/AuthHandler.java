@@ -1,6 +1,7 @@
 package com.nettyhome._4_wxIM.server.handler;
 
 import com.nettyhome._4_wxIM.util.SessionUtil;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
@@ -8,14 +9,20 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
  * @author jrk
  * @date 2022-05-14 0:57.
  */
+@ChannelHandler.Sharable
 public class AuthHandler extends ChannelInboundHandlerAdapter {
+
+    public static final AuthHandler INSTANCE = new AuthHandler();
+
+    private AuthHandler() { }
+
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if(!SessionUtil.hasLogin(ctx.channel())){
-            // 未登录的数据包-直接强制关闭连接
+            // 未登录的数据包——直接强制关闭连接
             ctx.channel().close();
         }else{
-            System.out.println("数据包登录验证通过！");
+            System.out.println("数据包是否登录已验证通过！");
             // 验证连接已经登录-可插拔的AuthHandler
             ctx.pipeline().remove(this);
             // 已登录的数据包-向下传递给后续的指令处理器

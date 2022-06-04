@@ -15,11 +15,18 @@ import java.util.Date;
  * @date 2022-05-31 11:56.
  */
 public class LogoutRequestHandler extends SimpleChannelInboundHandler<LogoutRequestPacket> {
+
+    public static final LogoutRequestHandler INSTANCE = new LogoutRequestHandler();
+
+    private LogoutRequestHandler() { }
+
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, LogoutRequestPacket logoutRequestPacket) throws Exception {
         Session session = SessionUtil.getSession(ctx.channel());
         SessionUtil.unBindSession(ctx.channel());
+
         System.out.println(new Date() + ": 服务端处理客户端["+session.getUsername()+"]连接的登出成功");
+
         LogoutResponsePacket logoutResponsePacket = new LogoutResponsePacket();
         logoutResponsePacket.setSuccess(true);
         ctx.channel().writeAndFlush(logoutResponsePacket);

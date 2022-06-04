@@ -17,6 +17,11 @@ import java.util.List;
  * @date 2022-06-02 12:20.
  */
 public class ListGroupMembersRequestHandler extends SimpleChannelInboundHandler<ListGroupMembersRequestPacket> {
+
+    public static final ListGroupMembersRequestHandler INSTANCE = new ListGroupMembersRequestHandler();
+
+    private ListGroupMembersRequestHandler() { }
+
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, ListGroupMembersRequestPacket listGroupMembersRequestPacket) throws Exception {
         String groupId = listGroupMembersRequestPacket.getGroupId();
@@ -28,7 +33,10 @@ public class ListGroupMembersRequestHandler extends SimpleChannelInboundHandler<
         if(channelGroup != null){
             List<Session> groupSessionList = new ArrayList<>();
             for(Channel channel : channelGroup){
-                groupSessionList.add(SessionUtil.getSession(channel));
+                // 判断channelGroup中的连接是否已登录
+                if(SessionUtil.hasLogin(channel)){
+                    groupSessionList.add(SessionUtil.getSession(channel));
+                }
             }
             listGroupMembersResponsePacket.setGroupSessionList(groupSessionList);
         }
